@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bube's Pro - Professional Forex Trading Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0f;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #2a2a4a;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(0, 212, 255, 0.1);
+            color: #00d4ff;
+        }
+
+        .account-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .balance {
+            background: linear-gradient(45deg, #00c851, #00ff88);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        /* Main Container */
+        .main-container {
+            display: grid;
+            grid-template-columns: 300px 1fr 350px;
+            height: 100vh;
+            padding-top: 80px;
+            gap: 1rem;
+            padding: 80px 1rem 1rem 1rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid #2a2a4a;
+        }
+
+        .sidebar h3 {
+            color: #00d4ff;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .currency-pair {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .currency-pair:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: #00d4ff;
+        }
+
+        .currency-pair.active {
+            background: linear-gradient(45deg, rgba(0, 212, 255, 0.2), rgba(0, 153, 204, 0.2));
+            border-color: #00d4ff;
+        }
+
+        .pair-name {
+            font-weight: bold;
+        }
+
+        .pair-price {
+            color: #00ff88;
+        }
+
+        .pair-change {
+            font-size: 0.9rem;
+        }
+
+        .positive {
+            color: #00ff88;
+        }
+
+        .negative {
+            color: #ff4757;
+        }
+
+        /* Trading Chart */
+        .chart-container {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid #2a2a4a;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .chart-title {
+            font-size: 1.5rem;
+            color: #00d4ff;
+        }
+
+        .timeframe-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .timeframe-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #2a2a4a;
+            color: #ffffff;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .timeframe-btn:hover, .timeframe-btn.active {
+            background: #00d4ff;
+            color: #000;
+        }
+
+        .chart {
+            flex: 1;
+            background: #0f0f1a;
+            border-radius: 10px;
+            position: relative;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chart-placeholder {
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        /* Right Panel */
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .trading-panel, .positions-panel {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid #2a2a4a;
+        }
+
+        .panel-title {
+            color: #00d4ff;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .trade-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+
+        .form-group input, .form-group select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #2a2a4a;
+            color: #ffffff;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+        }
+
+        .trade-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .buy-btn, .sell-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .buy-btn {
+            background: linear-gradient(45deg, #00c851, #00ff88);
+            color: #000;
+        }
+
+        .sell-btn {
+            background: linear-gradient(45deg, #ff4757, #ff3838);
+            color: #fff;
+        }
+
+        .buy-btn:hover, .sell-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Positions */
+        .position-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid #2a2a4a;
+        }
+
+        .position-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .position-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        .close-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        /* Market Stats */
+        .market-stats {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid #2a2a4a;
+            margin-top: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 212, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0); }
+        }
+
+        .active-trade {
+            animation: pulse 2s infinite;
+        }
+
+        /* Price ticker */
+        .price-ticker {
+            background: #0f0f1a;
+            padding: 0.5rem 0;
+            white-space: nowrap;
+            overflow: hidden;
+            border-top: 1px solid #2a2a4a;
+            border-bottom: 1px solid #2a2a4a;
+        }
+
+        .ticker-content {
+            display: inline-block;
+            animation: scroll 30s linear infinite;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .ticker-item {
+            display: inline-block;
+            margin-right: 3rem;
+            color: #ccc;
+        }
+
+        /* News Panel */
+        .news-panel {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid #2a2a4a;
+            margin-top: 1rem;
+        }
+
+        .news-item {
+            padding: 0.8rem;
+            border-bottom: 1px solid #2a2a4a;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .news-item:hover {
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .news-time {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .news-title {
+            color: #fff;
+            font-weight: bold;
+            margin: 0.3rem 0;
+        }
+
+        .news-impact {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .high-impact {
+            background: #ff4757;
+            color: white;
+        }
+
+        .medium-impact {
+            background: #ffa502;
+            color: white;
+        }
+
+        .low-impact {
+            background: #2ed573;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">Bube's Pro</div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#trading">Trading</a></li>
+                    <li><a href="#markets">Markets</a></li>
+                    <li><a href="#analysis">Analysis</a></li>
+                    <li><a href="#education">Education</a></li>
+                    <li><a href="#portfolio">Portfolio</a></li>
+                </ul>
+            </nav>
+            <div class="account-info">
+                <div class="balance" id="accountBalance">$10,000.00</div>
+                <div>Demo Account</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Price Ticker -->
+    <div class="price-ticker">
+        <div class="ticker-content">
+            <span class="ticker-item">EUR/USD: 1.0845 <span class="positive">+0.12%</span></span>
+            <span class="ticker-item">GBP/USD: 1.2567 <span class="negative">-0.08%</span></span>
+            <span class="ticker-item">USD/JPY: 149.85 <span class="positive">+0.25%</span></span>
+            <span class="ticker-item">AUD/USD: 0.6723 <span class="positive">+0.15%</span></span>
+            <span class="ticker-item">USD/CHF: 0.8892 <span class="negative">-0.04%</span></span>
+            <span class="ticker-item">EUR/GBP: 0.8634 <span class="positive">+0.09%</span></span>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h3>Currency Pairs</h3>
+            <div class="currency-pair active" onclick="selectPair('EUR/USD', 1.0845)">
+                <div>
+                    <div class="pair-name">EUR/USD</div>
+                    <div class="pair-change positive">+0.12%</div>
+                </div>
+                <div class="pair-price">1.0845</div>
+            </div>
+            <div class="currency-pair" onclick="selectPair('GBP/USD', 1.2567)">
+                <div>
+                    <div class="pair-name">GBP/USD</div>
+                    <div class="pair-change negative">-0.08%</div>
+                </div>
+                <div class="pair-price">1.2567</div>
+            </div>
+            <div class="currency-pair" onclick="selectPair('USD/JPY', 149.85)">
+                <div>
+                    <div class="pair-name">USD/JPY</div>
+                    <div class="pair-change positive">+0.25%</div>
+                </div>
+                <div class="pair-price">149.85</div>
+            </div>
+            <div class="currency-pair" onclick="selectPair('AUD/USD', 0.6723)">
+                <div>
+                    <div class="pair-name">AUD/USD</div>
+                    <div class="pair-change positive">+0.15%</div>
+                </div>
+                <div class="pair-price">0.6723</div>
+            </div>
+            <div class="currency-pair" onclick="selectPair('USD/CHF', 0.8892)">
+                <div>
+                    <div class="pair-name">USD/CHF</div>
+                    <div class="pair-change negative">-0.04%</div>
+                </div>
+                <div class="pair-price">0.8892</div>
+            </div>
+            <div class="currency-pair" onclick="selectPair('EUR/GBP', 0.8634)">
+                <div>
+                    <div class="pair-name">EUR/GBP</div>
+                    <div class="pair-change positive">+0.09%</div>
+                </div>
+                <div class="pair-price">0.8634</div>
+            </div>
+
+            <!-- Market Stats -->
+            <div class="market-stats">
+                <h3>Market Overview</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">2.4M</div>
+                        <div class="stat-label">Volume</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">0.8</div>
+                        <div class="stat-label">Spread</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">24h</div>
+                        <div class="stat-label">Open</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">99.9%</div>
+                        <div class="stat-label">Uptime</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- News Panel -->
+            <div class="news-panel">
+                <h3>Market News</h3>
+                <div class="news-item">
+                    <div class="news-time">2 hours ago</div>
+                    <div class="news-title">ECB Interest Rate Decision</div>
+                    <span class="news-impact high-impact">HIGH</span>
+                </div>
+                <div class="news-item">
+                    <div class="news-time">4 hours ago</div>
+                    <div class="news-title">US Employment Data</div>
+                    <span class="news-impact medium-impact">MEDIUM</span>
+                </div>
+                <div class="news-item">
+                    <div class="news-time">6 hours ago</div>
+                    <div class="news-title">GBP Manufacturing PMI</div>
+                    <span class="news-impact low-impact">LOW</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart Container -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <div class="chart-title" id="chartTitle">EUR/USD - 1.0845</div>
+                <div class="timeframe-buttons">
+                    <button class="timeframe-btn" onclick="changeTimeframe('1M')">1M</button>
+                    <button class="timeframe-btn" onclick="changeTimeframe('5M')">5M</button>
+                    <button class="timeframe-btn active" onclick="changeTimeframe('15M')">15M</button>
+                    <button class="timeframe-btn" onclick="changeTimeframe('1H')">1H</button>
+                    <button class="timeframe-btn" onclick="changeTimeframe('4H')">4H</button>
+                    <button class="timeframe-btn" onclick="changeTimeframe('1D')">1D</button>
+                </div>
+            </div>
+            <div class="chart">
+                <canvas id="tradingChart" width="800" height="400"></canvas>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <!-- Trading Panel -->
+            <div class="trading-panel">
+                <h3 class="panel-title">Place Order</h3>
+                <form class="trade-form" onsubmit="placeTrade(event)">
+                    <div class="form-group">
+                        <label for="symbol">Symbol</label>
+                        <select id="symbol">
+                            <option value="EUR/USD">EUR/USD</option>
+                            <option value="GBP/USD">GBP/USD</option>
+                            <option value="USD/JPY">USD/JPY</option>
+                            <option value="AUD/USD">AUD/USD</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="volume">Volume (Lots)</label>
+                        <input type="number" id="volume" value="0.01" step="0.01" min="0.01" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label for="stopLoss">Stop Loss</label>
+                        <input type="number" id="stopLoss" step="0.0001" placeholder="Optional">
+                    </div>
+                    <div class="form-group">
+                        <label for="takeProfit">Take Profit</label>
+                        <input type="number" id="takeProfit" step="0.0001" placeholder="Optional">
+                    </div>
+                    <div class="trade-buttons">
+                        <button type="button" class="buy-btn" onclick="placeTrade('BUY')">
+                            BUY<br><span id="buyPrice">1.0846</span>
+                        </button>
+                        <button type="button" class="sell-btn" onclick="placeTrade('SELL')">
+                            SELL<br><span id="sellPrice">1.0844</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Positions Panel -->
+            <div class="positions-panel">
+                <h3 class="panel-title">Open Positions</h3>
+                <div id="positionsList">
+                    <div class="position-item">
+                        <div class="position-header">
+                            <span><strong>EUR/USD BUY</strong></span>
+                            <button class="close-btn" onclick="closePosition(1)">Close</button>
+                        </div>
+                        <div class="position-details">
+                            <span>Volume: 0.10</span>
+                            <span class="positive">P&L: +$25.50</span>
+                        </div>
+                    </div>
+                    <div class="position-item">
+                        <div class="position-header">
+                            <span><strong>GBP/USD SELL</strong></span>
+                            <button class="close-btn" onclick="closePosition(2)">Close</button>
+                        </div>
+                        <div class="position-details">
+                            <span>Volume: 0.05</span>
+                            <span class="negative">P&L: -$12.30</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentPair = 'EUR/USD';
+        let currentPrice = 1.0845;
+        let positions = [];
+        let positionId = 1;
+        let balance = 10000;
+
+        // Initialize chart
+      
